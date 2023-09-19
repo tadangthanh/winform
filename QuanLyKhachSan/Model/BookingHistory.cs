@@ -12,5 +12,6 @@ namespace QuanLyKhachSan.Model
         public Reservation Reservation { get; set; }
         public DateTime BookingTime { get; set; }
         public decimal TotalPrice { get; set; }
+        public Customer Customer { get; set; }
     }
 }

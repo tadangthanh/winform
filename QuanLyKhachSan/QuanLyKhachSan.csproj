@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\ReservationDTO.cs" />
     <Compile Include="Views\Booking.cs">
       <SubType>Form</SubType>
     </Compile>

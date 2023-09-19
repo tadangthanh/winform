@@ -1,4 +1,5 @@
-﻿using QuanLyKhachSan.Model;
+﻿using QuanLyKhachSan.DTO;
+using QuanLyKhachSan.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,7 @@ namespace QuanLyKhachSan.Views
         private string strCon = @"Data Source=DESKTOP-CR5N4N8\SQLEXPRESS;Initial Catalog=QuanLyKhachSan;Integrated Security=True";
         private BindingList<Room> roomList = new BindingList<Room>();
         private BindingList<String> roomType = new BindingList<String>();
+        private BindingList<ReservationDTO> reservations = new BindingList<ReservationDTO>();
         private Room roomBooking;
         public Booking()
         {
@@ -44,7 +46,11 @@ namespace QuanLyKhachSan.Views
             }
             reader.Close();
             InitializeComponent();
+            DataList(conn);
+            dtgListReservation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             cbbTypeRoom.DataSource = roomType;
+
+
         }
 
         private void label6_Click(object sender, EventArgs e)
@@ -147,6 +153,7 @@ namespace QuanLyKhachSan.Views
                 if (insertHistoryBooking(insertedReservationId, DateTime.Now, roomBooking.Price, insertedCustomerId, conn)>0)
                 {
                     MessageBox.Show("Đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    clearValueTextBox();
                 }
             }
         }
@@ -167,13 +174,41 @@ namespace QuanLyKhachSan.Views
             }
             catch { return 0; }
         }
-
+        public void DataList(SqlConnection conn)
+        {
+            string sqlQuery = "select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId;";
+            using (SqlCommand command = new SqlCommand(sqlQuery, conn))
+            {
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate"));
+                    reservationDTO.CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate"));
+                    reservationDTO.CustomerName= reader.GetString(reader.GetOrdinal("Name"));
+                    reservationDTO.RoomType = reader.GetString(reader.GetOrdinal("RoomType"));
+                    reservationDTO.PaymentStatus = reader.GetString(reader.GetOrdinal("PaymentStatus"));
+                    reservationDTO.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
+                    reservations.Add(reservationDTO);
+                }
+                reader.Close();
+            }
+            dtgListReservation.DataSource = reservations;
+        }
+        public void clearValueTextBox()
+        {
+            txtAddress.Text = "";
+            txtCCCD.Text = "";
+            txtFullName.Text = "";
+            txtNumberPhone.Text = "";
+        }
         //load dữ liệu cũ vào textbox nếu khách hàng tồn tại
         private void txtCCCD_TextChanged(object sender, EventArgs e)
         {
             string cccd = txtCCCD.Text;
             if (cccd.Length > 11)
             {
+                btnDatPhong.Enabled = true;
                 try
                 {
                     string sqlQuery = "SELECT * FROM Customer WHERE CitizenIdNumber = @cccd";
@@ -205,5 +240,7 @@ namespace QuanLyKhachSan.Views
                 }
             }
         }
+
+        
     }
 }
