@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace QuanLyKhachSan.Views
 {
@@ -13,9 +15,12 @@ namespace QuanLyKhachSan.Views
     {
         private SqlConnection conn = null;
         private string strCon = @"Data Source=DESKTOP-CR5N4N8\SQLEXPRESS;Initial Catalog=QuanLyKhachSan;Integrated Security=True";
+        // danh sách các loại phòng của ks
         private BindingList<Room> roomList = new BindingList<Room>();
         private BindingList<String> roomType = new BindingList<String>();
+        // danh sách khách đặt phòng
         private BindingList<ReservationDTO> reservations = new BindingList<ReservationDTO>();
+        //phòng khách đặt
         private Room roomBooking;
         public Booking()
         {
@@ -46,13 +51,26 @@ namespace QuanLyKhachSan.Views
             }
             reader.Close();
             InitializeComponent();
+            dtgListReservation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            HandlerCommon();
+        }
+        private void HandlerCommon()
+        {
             DataList(conn);
             dtgListReservation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dpCheckIn.Value = DateTime.Now;
             cbbTypeRoom.DataSource = roomType;
 
+            txtSearchReservation.GotFocus += new EventHandler(textBox_GotFocus);
+            void textBox_GotFocus(object sender, EventArgs e)
+            {
+                if (!string.IsNullOrEmpty(txtSearchReservation.Text) && txtSearchReservation.Text.Equals("Tìm kiếm theo tên"))
+                {
+                    txtSearchReservation.Text = "";
+                }
+            }
 
         }
-
         private void label6_Click(object sender, EventArgs e)
         {
 
@@ -150,14 +168,25 @@ namespace QuanLyKhachSan.Views
                 command.Parameters.AddWithValue("@contactInformation", reservation.ContactInformation);
                 command.Parameters.AddWithValue("@paymentStatus", reservation.PaymentStatus);
                 insertedReservationId = (int)command.ExecuteScalar();
-                if (insertHistoryBooking(insertedReservationId, DateTime.Now, roomBooking.Price, insertedCustomerId, conn)>0)
+                if (insertHistoryBooking(insertedReservationId, DateTime.Now, roomBooking.Price, insertedCustomerId, conn) > 0)
                 {
                     MessageBox.Show("Đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.CheckInDate = reservation.CheckInDate;
+                    reservationDTO.CheckOutDate = reservation.CheckOutDate;
+                    reservationDTO.PhoneNumber = customer.PhoneNumber;
+                    reservationDTO.CustomerName = customer.Name;
+                    reservationDTO.PaymentStatus = reservation.PaymentStatus;
+                    reservationDTO.RoomType = roomBooking.RoomType;
+                    reservations.Add(reservationDTO);
+                    dtgListReservation.DataSource = reservations;
+                    btnDatPhong.Enabled = false;
+                    sorting();
                     clearValueTextBox();
                 }
             }
         }
-        public int insertHistoryBooking(int reservationId, DateTime BookingTime, decimal totalPrice,int customerId, SqlConnection conn)
+        public int insertHistoryBooking(int reservationId, DateTime BookingTime, decimal totalPrice, int customerId, SqlConnection conn)
         {
             try
             {
@@ -176,7 +205,7 @@ namespace QuanLyKhachSan.Views
         }
         public void DataList(SqlConnection conn)
         {
-            string sqlQuery = "select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId;";
+            string sqlQuery = @"select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId where v.PaymentStatus like '%chưa thanh toán%';";
             using (SqlCommand command = new SqlCommand(sqlQuery, conn))
             {
                 SqlDataReader reader = command.ExecuteReader();
@@ -185,7 +214,7 @@ namespace QuanLyKhachSan.Views
                     ReservationDTO reservationDTO = new ReservationDTO();
                     reservationDTO.CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate"));
                     reservationDTO.CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate"));
-                    reservationDTO.CustomerName= reader.GetString(reader.GetOrdinal("Name"));
+                    reservationDTO.CustomerName = reader.GetString(reader.GetOrdinal("Name"));
                     reservationDTO.RoomType = reader.GetString(reader.GetOrdinal("RoomType"));
                     reservationDTO.PaymentStatus = reader.GetString(reader.GetOrdinal("PaymentStatus"));
                     reservationDTO.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
@@ -241,6 +270,73 @@ namespace QuanLyKhachSan.Views
             }
         }
 
-        
+        private void dpCheckout_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime dateSelected = dpCheckout.Value;
+            if (dateSelected < DateTime.Now)
+            {
+                MessageBox.Show("Thời gian trả phòng không hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dpCheckout.Value = DateTime.Now;
+            }
+        }
+        private void sorting()
+        {
+            string sortingSelected = cbbSortReservation.SelectedItem as string;
+            if (sortingSelected != null)
+            {
+                if (sortingSelected.Equals("Ngày rời khỏi giảm dần"))
+                {
+                    var sortedReservations = new BindingList<ReservationDTO>(reservations.OrderByDescending(r => r.CheckOutDate).ToList());
+                    reservations = sortedReservations;
+                    dtgListReservation.DataSource = reservations;
+                }
+                else if (sortingSelected.Equals("Ngày rời khỏi tăng dần"))
+                {
+                    var sortedReservations = new BindingList<ReservationDTO>(reservations.OrderBy(r => r.CheckOutDate).ToList());
+                    reservations = sortedReservations;
+                    dtgListReservation.DataSource = reservations;
+                }
+            }
+
+
+        }
+
+        private void cbbSortReservation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            sorting();
+        }
+        private void txtSearchReservation_TextChanged(object sender, EventArgs e)
+        {
+            string keyword = txtSearchReservation.Text.Trim();
+            string sqlQuery = @"select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId where c.Name like @Name";
+            using (SqlCommand command = new SqlCommand(sqlQuery, conn))
+            {
+                reservations.Clear();
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    command.Parameters.AddWithValue("@Name", "%" + keyword + "%");
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@Name", "%%");
+                }
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ReservationDTO reservationDTO = new ReservationDTO();
+                        reservationDTO.CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate"));
+                        reservationDTO.CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate"));
+                        reservationDTO.CustomerName = reader.GetString(reader.GetOrdinal("Name"));
+                        reservationDTO.RoomType = reader.GetString(reader.GetOrdinal("RoomType"));
+                        reservationDTO.PaymentStatus = reader.GetString(reader.GetOrdinal("PaymentStatus"));
+                        reservationDTO.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
+                        reservations.Add(reservationDTO);
+                    }
+                }
+                dtgListReservation.DataSource = reservations;
+                sorting();
+            }
+        }
     }
 }

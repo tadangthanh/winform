@@ -38,7 +38,6 @@
             this.txtCCCD = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.dpCheckout = new System.Windows.Forms.DateTimePicker();
-            this.txtCheckin = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.btnDatPhong = new System.Windows.Forms.Button();
@@ -60,9 +59,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.picRoomUrl = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.dtgListReservation = new System.Windows.Forms.DataGridView();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.cbbSortReservation = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtSearchReservation = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.picRoomUrl = new System.Windows.Forms.PictureBox();
             this.danhMụcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnListBooking = new System.Windows.Forms.ToolStripMenuItem();
             this.btnListCustomer = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,18 +81,18 @@
             this.thanhToánToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hệThốngToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.đăngXuấtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.dpCheckIn = new System.Windows.Forms.DateTimePicker();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgListReservation)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Menu;
+            this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.txtDesc);
             this.groupBox1.Controls.Add(this.txtAmen);
             this.groupBox1.Controls.Add(this.lbPrice);
@@ -106,9 +110,11 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.picRoomUrl);
+            this.groupBox1.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.InfoText;
             this.groupBox1.Location = new System.Drawing.Point(12, 40);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1309, 361);
+            this.groupBox1.Size = new System.Drawing.Size(1309, 369);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin chi tiết";
@@ -136,17 +142,18 @@
             this.lbPrice.AutoSize = true;
             this.lbPrice.Location = new System.Drawing.Point(426, 62);
             this.lbPrice.Name = "lbPrice";
-            this.lbPrice.Size = new System.Drawing.Size(105, 22);
+            this.lbPrice.Size = new System.Drawing.Size(98, 22);
             this.lbPrice.TabIndex = 16;
             this.lbPrice.Text = "Đây lag giá:";
             // 
             // groupBox2
             // 
+            this.groupBox2.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox2.Controls.Add(this.dpCheckIn);
             this.groupBox2.Controls.Add(this.lbCustomerId);
             this.groupBox2.Controls.Add(this.txtCCCD);
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.dpCheckout);
-            this.groupBox2.Controls.Add(this.txtCheckin);
             this.groupBox2.Controls.Add(this.label12);
             this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.btnDatPhong);
@@ -178,7 +185,7 @@
             this.txtCCCD.Location = new System.Drawing.Point(169, 49);
             this.txtCCCD.MaxLength = 12;
             this.txtCCCD.Name = "txtCCCD";
-            this.txtCCCD.Size = new System.Drawing.Size(287, 27);
+            this.txtCCCD.Size = new System.Drawing.Size(287, 29);
             this.txtCCCD.TabIndex = 13;
             this.txtCCCD.TextChanged += new System.EventHandler(this.txtCCCD_TextChanged);
             // 
@@ -189,7 +196,7 @@
             this.label13.ForeColor = System.Drawing.Color.Red;
             this.label13.Location = new System.Drawing.Point(20, 49);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(101, 22);
+            this.label13.Size = new System.Drawing.Size(89, 22);
             this.label13.TabIndex = 12;
             this.label13.Text = "Số CCCD:*";
             // 
@@ -199,16 +206,9 @@
             this.dpCheckout.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dpCheckout.Location = new System.Drawing.Point(169, 302);
             this.dpCheckout.Name = "dpCheckout";
-            this.dpCheckout.Size = new System.Drawing.Size(287, 27);
+            this.dpCheckout.Size = new System.Drawing.Size(287, 29);
             this.dpCheckout.TabIndex = 11;
-            // 
-            // txtCheckin
-            // 
-            this.txtCheckin.Location = new System.Drawing.Point(169, 255);
-            this.txtCheckin.Name = "txtCheckin";
-            this.txtCheckin.ReadOnly = true;
-            this.txtCheckin.Size = new System.Drawing.Size(287, 27);
-            this.txtCheckin.TabIndex = 10;
+            this.dpCheckout.ValueChanged += new System.EventHandler(this.dpCheckout_ValueChanged);
             // 
             // label12
             // 
@@ -216,7 +216,7 @@
             this.label12.BackColor = System.Drawing.Color.Transparent;
             this.label12.Location = new System.Drawing.Point(18, 258);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(92, 22);
+            this.label12.Size = new System.Drawing.Size(87, 22);
             this.label12.TabIndex = 9;
             this.label12.Text = "Ngày đến:";
             // 
@@ -226,7 +226,7 @@
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.Location = new System.Drawing.Point(18, 306);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(151, 22);
+            this.label11.Size = new System.Drawing.Size(145, 22);
             this.label11.TabIndex = 7;
             this.label11.Text = "Ngày đi (dự kiến):";
             // 
@@ -248,21 +248,21 @@
             // 
             this.txtNumberPhone.Location = new System.Drawing.Point(169, 202);
             this.txtNumberPhone.Name = "txtNumberPhone";
-            this.txtNumberPhone.Size = new System.Drawing.Size(287, 27);
+            this.txtNumberPhone.Size = new System.Drawing.Size(287, 29);
             this.txtNumberPhone.TabIndex = 5;
             // 
             // txtAddress
             // 
             this.txtAddress.Location = new System.Drawing.Point(169, 146);
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(287, 27);
+            this.txtAddress.Size = new System.Drawing.Size(287, 29);
             this.txtAddress.TabIndex = 4;
             // 
             // txtFullName
             // 
             this.txtFullName.Location = new System.Drawing.Point(169, 93);
             this.txtFullName.Name = "txtFullName";
-            this.txtFullName.Size = new System.Drawing.Size(287, 27);
+            this.txtFullName.Size = new System.Drawing.Size(287, 29);
             this.txtFullName.TabIndex = 3;
             // 
             // label10
@@ -271,7 +271,7 @@
             this.label10.BackColor = System.Drawing.Color.Transparent;
             this.label10.Location = new System.Drawing.Point(19, 205);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(120, 22);
+            this.label10.Size = new System.Drawing.Size(114, 22);
             this.label10.TabIndex = 2;
             this.label10.Text = "Số điện thoại:";
             // 
@@ -281,7 +281,7 @@
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Location = new System.Drawing.Point(20, 146);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(70, 22);
+            this.label9.Size = new System.Drawing.Size(66, 22);
             this.label9.TabIndex = 1;
             this.label9.Text = "Địa chỉ:";
             // 
@@ -291,7 +291,7 @@
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Location = new System.Drawing.Point(20, 93);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 22);
+            this.label8.Size = new System.Drawing.Size(66, 22);
             this.label8.TabIndex = 0;
             this.label8.Text = "Họ tên:";
             // 
@@ -300,7 +300,7 @@
             this.lbUrlImg.AutoSize = true;
             this.lbUrlImg.Location = new System.Drawing.Point(426, 251);
             this.lbUrlImg.Name = "lbUrlImg";
-            this.lbUrlImg.Size = new System.Drawing.Size(83, 22);
+            this.lbUrlImg.Size = new System.Drawing.Size(78, 22);
             this.lbUrlImg.TabIndex = 14;
             this.lbUrlImg.Text = "day la url";
             this.lbUrlImg.Click += new System.EventHandler(this.lbUrlImg_Click);
@@ -319,7 +319,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(282, 251);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(138, 22);
+            this.label6.Size = new System.Drawing.Size(135, 22);
             this.label6.TabIndex = 11;
             this.label6.Text = "Đường dẫn ảnh:";
             this.label6.Click += new System.EventHandler(this.label6_Click);
@@ -329,7 +329,7 @@
             this.lbStatus.AutoSize = true;
             this.lbStatus.Location = new System.Drawing.Point(426, 212);
             this.lbStatus.Name = "lbStatus";
-            this.lbStatus.Size = new System.Drawing.Size(138, 22);
+            this.lbStatus.Size = new System.Drawing.Size(132, 22);
             this.lbStatus.TabIndex = 10;
             this.lbStatus.Text = "day la trang thai";
             // 
@@ -338,7 +338,7 @@
             this.lbNote.AutoSize = true;
             this.lbNote.Location = new System.Drawing.Point(426, 169);
             this.lbNote.Name = "lbNote";
-            this.lbNote.Size = new System.Drawing.Size(121, 22);
+            this.lbNote.Size = new System.Drawing.Size(114, 22);
             this.lbNote.TabIndex = 9;
             this.lbNote.Text = "day la ghi chu";
             // 
@@ -364,7 +364,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(281, 212);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(97, 22);
+            this.label5.Size = new System.Drawing.Size(91, 22);
             this.label5.TabIndex = 5;
             this.label5.Text = "Trạng thái:";
             // 
@@ -373,7 +373,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(281, 169);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 22);
+            this.label4.Size = new System.Drawing.Size(72, 22);
             this.label4.TabIndex = 4;
             this.label4.Text = "Ghi chú:";
             // 
@@ -382,7 +382,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(281, 96);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(90, 22);
+            this.label3.Size = new System.Drawing.Size(85, 22);
             this.label3.TabIndex = 3;
             this.label3.Text = "Tiện nghi:";
             // 
@@ -391,7 +391,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(281, 62);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(43, 22);
+            this.label2.Size = new System.Drawing.Size(39, 22);
             this.label2.TabIndex = 2;
             this.label2.Text = "Giá:";
             // 
@@ -400,26 +400,17 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(281, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(104, 22);
+            this.label1.Size = new System.Drawing.Size(101, 22);
             this.label1.TabIndex = 1;
             this.label1.Text = "Loại phòng:";
-            // 
-            // picRoomUrl
-            // 
-            this.picRoomUrl.Image = global::QuanLyKhachSan.Properties.Resources.home;
-            this.picRoomUrl.Location = new System.Drawing.Point(6, 26);
-            this.picRoomUrl.Name = "picRoomUrl";
-            this.picRoomUrl.Size = new System.Drawing.Size(229, 212);
-            this.picRoomUrl.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picRoomUrl.TabIndex = 0;
-            this.picRoomUrl.TabStop = false;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.dtgListReservation);
-            this.groupBox3.Location = new System.Drawing.Point(12, 407);
+            this.groupBox3.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.groupBox3.Location = new System.Drawing.Point(12, 445);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1303, 343);
+            this.groupBox3.Size = new System.Drawing.Size(1303, 305);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Danh sách đặt phòng";
@@ -432,11 +423,82 @@
             this.dtgListReservation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgListReservation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dtgListReservation.GridColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dtgListReservation.Location = new System.Drawing.Point(3, 23);
+            this.dtgListReservation.Location = new System.Drawing.Point(3, 25);
             this.dtgListReservation.Name = "dtgListReservation";
             this.dtgListReservation.RowHeadersWidth = 45;
-            this.dtgListReservation.Size = new System.Drawing.Size(1297, 317);
+            this.dtgListReservation.Size = new System.Drawing.Size(1297, 277);
             this.dtgListReservation.TabIndex = 0;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(18, 18);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.danhMụcToolStripMenuItem,
+            this.quảnLýToolStripMenuItem,
+            this.báoCáoThốngKêToolStripMenuItem,
+            this.thanhToánToolStripMenuItem,
+            this.hệThốngToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1333, 26);
+            this.menuStrip1.TabIndex = 1;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // cbbSortReservation
+            // 
+            this.cbbSortReservation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbSortReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.cbbSortReservation.FormattingEnabled = true;
+            this.cbbSortReservation.Items.AddRange(new object[] {
+            "Ngày rời khỏi giảm dần",
+            "Ngày rời khỏi tăng dần"});
+            this.cbbSortReservation.Location = new System.Drawing.Point(856, 415);
+            this.cbbSortReservation.Name = "cbbSortReservation";
+            this.cbbSortReservation.Size = new System.Drawing.Size(144, 30);
+            this.cbbSortReservation.Sorted = true;
+            this.cbbSortReservation.TabIndex = 4;
+            this.cbbSortReservation.SelectedIndexChanged += new System.EventHandler(this.cbbSortReservation_SelectedIndexChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label14.Location = new System.Drawing.Point(735, 423);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(115, 22);
+            this.label14.TabIndex = 5;
+            this.label14.Text = "Xắp xếp theo:";
+            // 
+            // txtSearchReservation
+            // 
+            this.txtSearchReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.txtSearchReservation.Location = new System.Drawing.Point(1097, 418);
+            this.txtSearchReservation.Name = "txtSearchReservation";
+            this.txtSearchReservation.Size = new System.Drawing.Size(194, 29);
+            this.txtSearchReservation.TabIndex = 7;
+            this.txtSearchReservation.Text = "Tìm kiếm theo tên";
+            this.txtSearchReservation.TextChanged += new System.EventHandler(this.txtSearchReservation_TextChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Candara", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label15.Location = new System.Drawing.Point(1006, 423);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(85, 22);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Tìm kiếm:";
+            // 
+            // picRoomUrl
+            // 
+            this.picRoomUrl.Image = global::QuanLyKhachSan.Properties.Resources.home;
+            this.picRoomUrl.Location = new System.Drawing.Point(6, 26);
+            this.picRoomUrl.Name = "picRoomUrl";
+            this.picRoomUrl.Size = new System.Drawing.Size(229, 212);
+            this.picRoomUrl.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picRoomUrl.TabIndex = 0;
+            this.picRoomUrl.TabStop = false;
             // 
             // danhMụcToolStripMenuItem
             // 
@@ -544,24 +606,18 @@
             this.đăngXuấtToolStripMenuItem.Image = global::QuanLyKhachSan.Properties.Resources.logout_3889524;
             this.đăngXuấtToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.đăngXuấtToolStripMenuItem.Name = "đăngXuấtToolStripMenuItem";
-            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(141, 24);
+            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
             this.đăngXuấtToolStripMenuItem.Text = "Đăng xuất";
             // 
-            // menuStrip1
+            // dpCheckIn
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(18, 18);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.danhMụcToolStripMenuItem,
-            this.quảnLýToolStripMenuItem,
-            this.báoCáoThốngKêToolStripMenuItem,
-            this.thanhToánToolStripMenuItem,
-            this.hệThốngToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1333, 26);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            this.dpCheckIn.CustomFormat = "dd/MM/yyyy";
+            this.dpCheckIn.Enabled = false;
+            this.dpCheckIn.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dpCheckIn.Location = new System.Drawing.Point(169, 251);
+            this.dpCheckIn.Name = "dpCheckIn";
+            this.dpCheckIn.Size = new System.Drawing.Size(287, 29);
+            this.dpCheckIn.TabIndex = 15;
             // 
             // Booking
             // 
@@ -569,6 +625,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(1333, 762);
+            this.Controls.Add(this.txtSearchReservation);
+            this.Controls.Add(this.cbbSortReservation);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
@@ -581,11 +641,11 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).EndInit();
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgListReservation)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -620,7 +680,6 @@
         private System.Windows.Forms.TextBox txtAmen;
         private System.Windows.Forms.TextBox txtDesc;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txtCheckin;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.DateTimePicker dpCheckout;
         private System.Windows.Forms.TextBox txtCCCD;
@@ -643,5 +702,10 @@
         private System.Windows.Forms.ToolStripMenuItem hệThốngToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem đăngXuấtToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ComboBox cbbSortReservation;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txtSearchReservation;
+        private System.Windows.Forms.DateTimePicker dpCheckIn;
     }
 }
