@@ -46,7 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAOImpl\BookingHistoryDAOImpl.cs" />
+    <Compile Include="DAOImpl\Commons.cs" />
+    <Compile Include="DAOImpl\CustomerDAOImpl.cs" />
+    <Compile Include="DAOImpl\ReservationDAOImpl.cs" />
+    <Compile Include="DAO\IBookingHistoryDAO.cs" />
+    <Compile Include="DAO\ICustomerDAO.cs" />
+    <Compile Include="DAO\IReservationDAO.cs" />
     <Compile Include="DTO\ReservationDTO.cs" />
+    <Compile Include="Mapper\BookingHistoryMapper.cs" />
+    <Compile Include="Mapper\CustomerMapper.cs" />
+    <Compile Include="Mapper\ReservationMapper.cs" />
+    <Compile Include="Mapper\RowMapper.cs" />
+    <Compile Include="Util\Connection.cs" />
+    <Compile Include="Util\TypeRegex.cs" />
+    <Compile Include="Util\Validation.cs" />
     <Compile Include="Views\Booking.cs">
       <SubType>Form</SubType>
     </Compile>

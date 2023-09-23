@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtDesc = new System.Windows.Forms.TextBox();
             this.txtAmen = new System.Windows.Forms.TextBox();
             this.lbPrice = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.dpCheckIn = new System.Windows.Forms.DateTimePicker();
             this.lbCustomerId = new System.Windows.Forms.Label();
             this.txtCCCD = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -59,14 +61,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.picRoomUrl = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.dtgListReservation = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.cbbSortReservation = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.txtSearchReservation = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.picRoomUrl = new System.Windows.Forms.PictureBox();
             this.danhMụcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnListBooking = new System.Windows.Forms.ToolStripMenuItem();
             this.btnListCustomer = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,13 +79,22 @@
             this.thanhToánToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hệThốngToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.đăngXuấtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dpCheckIn = new System.Windows.Forms.DateTimePicker();
+            this.cbbSortReservation = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtSearchReservation = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.errCCCD = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errNumberPhone = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errName = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgListReservation)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errCCCD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errNumberPhone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errName)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -170,6 +177,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Thông tin khách:";
             // 
+            // dpCheckIn
+            // 
+            this.dpCheckIn.CustomFormat = "dd/MM/yyyy";
+            this.dpCheckIn.Enabled = false;
+            this.dpCheckIn.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dpCheckIn.Location = new System.Drawing.Point(169, 251);
+            this.dpCheckIn.Name = "dpCheckIn";
+            this.dpCheckIn.Size = new System.Drawing.Size(287, 29);
+            this.dpCheckIn.TabIndex = 15;
+            // 
             // lbCustomerId
             // 
             this.lbCustomerId.AutoSize = true;
@@ -247,9 +264,11 @@
             // txtNumberPhone
             // 
             this.txtNumberPhone.Location = new System.Drawing.Point(169, 202);
+            this.txtNumberPhone.MaxLength = 10;
             this.txtNumberPhone.Name = "txtNumberPhone";
             this.txtNumberPhone.Size = new System.Drawing.Size(287, 29);
             this.txtNumberPhone.TabIndex = 5;
+            this.txtNumberPhone.TextChanged += new System.EventHandler(this.txtNumberPhone_TextChanged);
             // 
             // txtAddress
             // 
@@ -264,6 +283,7 @@
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(287, 29);
             this.txtFullName.TabIndex = 3;
+            this.txtFullName.TextChanged += new System.EventHandler(this.txtFullName_TextChanged);
             // 
             // label10
             // 
@@ -352,6 +372,7 @@
             // 
             // cbbTypeRoom
             // 
+            this.cbbTypeRoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbbTypeRoom.FormattingEnabled = true;
             this.cbbTypeRoom.Location = new System.Drawing.Point(426, 26);
             this.cbbTypeRoom.Name = "cbbTypeRoom";
@@ -404,6 +425,16 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Loại phòng:";
             // 
+            // picRoomUrl
+            // 
+            this.picRoomUrl.Image = global::QuanLyKhachSan.Properties.Resources.home;
+            this.picRoomUrl.Location = new System.Drawing.Point(6, 26);
+            this.picRoomUrl.Name = "picRoomUrl";
+            this.picRoomUrl.Size = new System.Drawing.Size(229, 212);
+            this.picRoomUrl.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picRoomUrl.TabIndex = 0;
+            this.picRoomUrl.TabStop = false;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.dtgListReservation);
@@ -419,12 +450,14 @@
             // 
             this.dtgListReservation.AllowUserToAddRows = false;
             this.dtgListReservation.AllowUserToDeleteRows = false;
+            this.dtgListReservation.AllowUserToResizeRows = false;
             this.dtgListReservation.BackgroundColor = System.Drawing.Color.White;
             this.dtgListReservation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgListReservation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dtgListReservation.GridColor = System.Drawing.SystemColors.ControlLightLight;
             this.dtgListReservation.Location = new System.Drawing.Point(3, 25);
             this.dtgListReservation.Name = "dtgListReservation";
+            this.dtgListReservation.ReadOnly = true;
             this.dtgListReservation.RowHeadersWidth = 45;
             this.dtgListReservation.Size = new System.Drawing.Size(1297, 277);
             this.dtgListReservation.TabIndex = 0;
@@ -444,61 +477,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(1333, 26);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // cbbSortReservation
-            // 
-            this.cbbSortReservation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbbSortReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.cbbSortReservation.FormattingEnabled = true;
-            this.cbbSortReservation.Items.AddRange(new object[] {
-            "Ngày rời khỏi giảm dần",
-            "Ngày rời khỏi tăng dần"});
-            this.cbbSortReservation.Location = new System.Drawing.Point(856, 415);
-            this.cbbSortReservation.Name = "cbbSortReservation";
-            this.cbbSortReservation.Size = new System.Drawing.Size(144, 30);
-            this.cbbSortReservation.Sorted = true;
-            this.cbbSortReservation.TabIndex = 4;
-            this.cbbSortReservation.SelectedIndexChanged += new System.EventHandler(this.cbbSortReservation_SelectedIndexChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label14.Location = new System.Drawing.Point(735, 423);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(115, 22);
-            this.label14.TabIndex = 5;
-            this.label14.Text = "Xắp xếp theo:";
-            // 
-            // txtSearchReservation
-            // 
-            this.txtSearchReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.txtSearchReservation.Location = new System.Drawing.Point(1097, 418);
-            this.txtSearchReservation.Name = "txtSearchReservation";
-            this.txtSearchReservation.Size = new System.Drawing.Size(194, 29);
-            this.txtSearchReservation.TabIndex = 7;
-            this.txtSearchReservation.Text = "Tìm kiếm theo tên";
-            this.txtSearchReservation.TextChanged += new System.EventHandler(this.txtSearchReservation_TextChanged);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Candara", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label15.Location = new System.Drawing.Point(1006, 423);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(85, 22);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "Tìm kiếm:";
-            // 
-            // picRoomUrl
-            // 
-            this.picRoomUrl.Image = global::QuanLyKhachSan.Properties.Resources.home;
-            this.picRoomUrl.Location = new System.Drawing.Point(6, 26);
-            this.picRoomUrl.Name = "picRoomUrl";
-            this.picRoomUrl.Size = new System.Drawing.Size(229, 212);
-            this.picRoomUrl.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picRoomUrl.TabIndex = 0;
-            this.picRoomUrl.TabStop = false;
             // 
             // danhMụcToolStripMenuItem
             // 
@@ -606,18 +584,65 @@
             this.đăngXuấtToolStripMenuItem.Image = global::QuanLyKhachSan.Properties.Resources.logout_3889524;
             this.đăngXuấtToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.đăngXuấtToolStripMenuItem.Name = "đăngXuấtToolStripMenuItem";
-            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
+            this.đăngXuấtToolStripMenuItem.Size = new System.Drawing.Size(141, 24);
             this.đăngXuấtToolStripMenuItem.Text = "Đăng xuất";
             // 
-            // dpCheckIn
+            // cbbSortReservation
             // 
-            this.dpCheckIn.CustomFormat = "dd/MM/yyyy";
-            this.dpCheckIn.Enabled = false;
-            this.dpCheckIn.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dpCheckIn.Location = new System.Drawing.Point(169, 251);
-            this.dpCheckIn.Name = "dpCheckIn";
-            this.dpCheckIn.Size = new System.Drawing.Size(287, 29);
-            this.dpCheckIn.TabIndex = 15;
+            this.cbbSortReservation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbSortReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.cbbSortReservation.FormattingEnabled = true;
+            this.cbbSortReservation.Items.AddRange(new object[] {
+            "Ngày rời khỏi giảm dần",
+            "Ngày rời khỏi tăng dần"});
+            this.cbbSortReservation.Location = new System.Drawing.Point(856, 415);
+            this.cbbSortReservation.Name = "cbbSortReservation";
+            this.cbbSortReservation.Size = new System.Drawing.Size(144, 30);
+            this.cbbSortReservation.Sorted = true;
+            this.cbbSortReservation.TabIndex = 4;
+            this.cbbSortReservation.SelectedIndexChanged += new System.EventHandler(this.cbbSortReservation_SelectedIndexChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label14.Location = new System.Drawing.Point(735, 423);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(115, 22);
+            this.label14.TabIndex = 5;
+            this.label14.Text = "Xắp xếp theo:";
+            // 
+            // txtSearchReservation
+            // 
+            this.txtSearchReservation.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.txtSearchReservation.Location = new System.Drawing.Point(1097, 418);
+            this.txtSearchReservation.Name = "txtSearchReservation";
+            this.txtSearchReservation.Size = new System.Drawing.Size(194, 29);
+            this.txtSearchReservation.TabIndex = 7;
+            this.txtSearchReservation.Text = "Tìm khách hàng";
+            this.txtSearchReservation.TextChanged += new System.EventHandler(this.txtSearchReservation_TextChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Candara", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label15.Location = new System.Drawing.Point(1006, 423);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(89, 23);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Tìm kiếm:";
+            // 
+            // errCCCD
+            // 
+            this.errCCCD.ContainerControl = this;
+            // 
+            // errNumberPhone
+            // 
+            this.errNumberPhone.ContainerControl = this;
+            // 
+            // errName
+            // 
+            this.errName.ContainerControl = this;
             // 
             // Booking
             // 
@@ -641,11 +666,14 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).EndInit();
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dtgListReservation)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picRoomUrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errCCCD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errNumberPhone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errName)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -707,5 +735,8 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox txtSearchReservation;
         private System.Windows.Forms.DateTimePicker dpCheckIn;
+        private System.Windows.Forms.ErrorProvider errCCCD;
+        private System.Windows.Forms.ErrorProvider errNumberPhone;
+        private System.Windows.Forms.ErrorProvider errName;
     }
 }

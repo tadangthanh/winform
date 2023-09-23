@@ -1,11 +1,15 @@
-﻿using QuanLyKhachSan.DTO;
+﻿using QuanLyKhachSan.DAO;
+using QuanLyKhachSan.DAOImpl;
+using QuanLyKhachSan.DTO;
 using QuanLyKhachSan.Model;
+using QuanLyKhachSan.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -13,25 +17,22 @@ namespace QuanLyKhachSan.Views
 {
     public partial class Booking : Form
     {
-        private SqlConnection conn = null;
-        private string strCon = @"Data Source=DESKTOP-CR5N4N8\SQLEXPRESS;Initial Catalog=QuanLyKhachSan;Integrated Security=True";
+
+        ICustomerDAO customerDao = new CustomerDAOImpl();
+        IReservationDAO reservationDao = new ReservationDAOImpl();
+        IBookingHistoryDAO bookingHistoryDAO = new BookingHistoryDAOImpl();
         // danh sách các loại phòng của ks
         private BindingList<Room> roomList = new BindingList<Room>();
         private BindingList<String> roomType = new BindingList<String>();
         // danh sách khách đặt phòng
         private BindingList<ReservationDTO> reservations = new BindingList<ReservationDTO>();
+        private Validation validation = new Validation();
+
         //phòng khách đặt
         private Room roomBooking;
         public Booking()
         {
-            if (conn == null)
-            {
-                conn = new SqlConnection(strCon);
-            }
-            if (conn.State == ConnectionState.Closed)
-            {
-                conn.Open();
-            }
+            SqlConnection conn = Connection.GetConnection();
             string sqlQuery = "SELECT * FROM Room";
             SqlCommand command = new SqlCommand(sqlQuery, conn);
             SqlDataReader reader = command.ExecuteReader();
@@ -53,9 +54,11 @@ namespace QuanLyKhachSan.Views
             InitializeComponent();
             dtgListReservation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             HandlerCommon();
+            Connection.CloseConnection(conn);
         }
         private void HandlerCommon()
         {
+            SqlConnection conn = Connection.GetConnection();
             DataList(conn);
             dtgListReservation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dpCheckIn.Value = DateTime.Now;
@@ -64,12 +67,9 @@ namespace QuanLyKhachSan.Views
             txtSearchReservation.GotFocus += new EventHandler(textBox_GotFocus);
             void textBox_GotFocus(object sender, EventArgs e)
             {
-                if (!string.IsNullOrEmpty(txtSearchReservation.Text) && txtSearchReservation.Text.Equals("Tìm kiếm theo tên"))
-                {
-                    txtSearchReservation.Text = "";
-                }
+                txtSearchReservation.Text = "";
             }
-
+            Connection.CloseConnection(conn);
         }
         private void label6_Click(object sender, EventArgs e)
         {
@@ -113,6 +113,7 @@ namespace QuanLyKhachSan.Views
         {
             Customer customer = new Customer();
             Reservation reservation = new Reservation();
+            BookingHistory bookingHistory = new BookingHistory();
             reservation.CheckInDate = DateTime.Now;
             reservation.CheckOutDate = dpCheckout.Value;
             string fullName = txtFullName.Text;
@@ -127,48 +128,43 @@ namespace QuanLyKhachSan.Views
             reservation.ContactInformation = customer.PhoneNumber;
             reservation.PaymentStatus = "Chưa thanh toán";
             reservation.Room = roomBooking;
-            string sqlQuery;
             int insertedCustomerId = 0;
             int insertedReservationId = 0;
-            // check nếu khách hàng tồn tại thì dùng luôn dữ liệu cũ của khách hàng
-            if (!string.IsNullOrEmpty(lbCustomerId.Text))
+            // dialog xác nhận lại thông tin khách hàng
+            string msg = "Họ tên khách hàng: " + customer.Name + "\n" + "Căn Cước công dân: " + customer.CitizenIdNumber + "\n"
+                + "Địa chỉ :" + customer.Address + "\n"
+                + "Số điện thoại: " + customer.PhoneNumber + "\n"
+                + "Ngày nhận phòng: " + reservation.CheckInDate + "\n"
+                + "Ngày trả phòng(dự kiến): " + reservation.CheckOutDate;
+            DialogResult reconfirm = MessageBox.Show(msg, "Kiểm tra lại thông tin", MessageBoxButtons.YesNo);
+
+            if (reconfirm == DialogResult.Yes && txtCCCD.Text.Length == 12)
             {
-                insertedCustomerId = int.Parse(lbCustomerId.Text);
-            }
-            else
-            {
-                // thêm dữ liệu vào bảng customer
-                try
+                // check nếu khách hàng tồn tại thì dùng luôn dữ liệu cũ của khách hàng
+                if (!string.IsNullOrEmpty(lbCustomerId.Text))
                 {
-                    sqlQuery = "INSERT INTO Customer (CitizenIdNumber,Name, Address, PhoneNumber) OUTPUT INSERTED.CustomerId VALUES (@CitizenIdNumber,@fullName, @address, @numberPhone)";
-                    using (SqlCommand command = new SqlCommand(sqlQuery, conn))
-                    {
-                        command.Parameters.AddWithValue("@fullName", fullName);
-                        command.Parameters.AddWithValue("@address", address);
-                        command.Parameters.AddWithValue("@numberPhone", numberPhone);
-                        command.Parameters.AddWithValue("@CitizenIdNumber", cccd);
-                        insertedCustomerId = (int)command.ExecuteScalar();
-                    }
+                    insertedCustomerId = int.Parse(lbCustomerId.Text);
                 }
-                catch { }
+                else
+                {   // thêm dữ liệu vào bảng customer
+                    try
+                    {
+                        insertedCustomerId = customerDao.save(customer);
+                        customer.CustomerId= insertedCustomerId;
+                    }
+                    catch { }
 
-            }
-
-            // thêm dữ liệu vào bảng đặt phòng (Reservation)
-            sqlQuery = "INSERT INTO Reservation (RoomId, CheckInDate, CheckOutDate,CustomerId," +
-                    "ContactInformation,PaymentStatus) OUTPUT INSERTED.ReservationId VALUES " +
-                    "(@roomId, @checkInDate, @checkOutDate,@customerId,@contactInformation,@paymentStatus)";
-            using (SqlCommand command = new SqlCommand(sqlQuery, conn))
-            {
-
-                command.Parameters.AddWithValue("@roomId", reservation.Room.RoomId);
-                command.Parameters.AddWithValue("@checkInDate", reservation.CheckInDate);
-                command.Parameters.AddWithValue("@checkOutDate", reservation.CheckOutDate);
-                command.Parameters.AddWithValue("@customerId", insertedCustomerId);
-                command.Parameters.AddWithValue("@contactInformation", reservation.ContactInformation);
-                command.Parameters.AddWithValue("@paymentStatus", reservation.PaymentStatus);
-                insertedReservationId = (int)command.ExecuteScalar();
-                if (insertHistoryBooking(insertedReservationId, DateTime.Now, roomBooking.Price, insertedCustomerId, conn) > 0)
+                }
+                // thêm dữ liệu vào bảng đặt phòng (Reservation)
+                SqlConnection conn = Connection.GetConnection();
+                reservation.Customer.CustomerId = insertedCustomerId;
+                insertedReservationId = reservationDao.save(reservation);
+                reservation.ReservationId = insertedReservationId;
+                bookingHistory.Reservation= reservation;
+                bookingHistory.Customer = customer;
+                bookingHistory.TotalPrice = roomBooking.Price;
+                bookingHistory.BookingTime = DateTime.Now;
+                if (bookingHistoryDAO.save(bookingHistory) > 0)
                 {
                     MessageBox.Show("Đặt phòng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ReservationDTO reservationDTO = new ReservationDTO();
@@ -184,9 +180,11 @@ namespace QuanLyKhachSan.Views
                     sorting();
                     clearValueTextBox();
                 }
+                Connection.CloseConnection(conn);
             }
+
         }
-        public int insertHistoryBooking(int reservationId, DateTime BookingTime, decimal totalPrice, int customerId, SqlConnection conn)
+       /* public int insertHistoryBooking(int reservationId, DateTime BookingTime, decimal totalPrice, int customerId, SqlConnection conn)
         {
             try
             {
@@ -202,7 +200,8 @@ namespace QuanLyKhachSan.Views
                 }
             }
             catch { return 0; }
-        }
+        }*/
+
         public void DataList(SqlConnection conn)
         {
             string sqlQuery = @"select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId where v.PaymentStatus like '%chưa thanh toán%';";
@@ -231,13 +230,17 @@ namespace QuanLyKhachSan.Views
             txtFullName.Text = "";
             txtNumberPhone.Text = "";
         }
+
         //load dữ liệu cũ vào textbox nếu khách hàng tồn tại
         private void txtCCCD_TextChanged(object sender, EventArgs e)
         {
+            SqlConnection conn = Connection.GetConnection();
             string cccd = txtCCCD.Text;
+            validation.validate(txtCCCD, TypeRegex.CCCD, errCCCD);
             if (cccd.Length > 11)
             {
-                btnDatPhong.Enabled = true;
+                btnDatPhong.Enabled = validation.checkAll() && !validation.validate(txtCCCD, TypeRegex.CCCD, errCCCD) ? true : false;
+
                 try
                 {
                     string sqlQuery = "SELECT * FROM Customer WHERE CitizenIdNumber = @cccd";
@@ -268,6 +271,7 @@ namespace QuanLyKhachSan.Views
 
                 }
             }
+            Connection.CloseConnection(conn);
         }
 
         private void dpCheckout_ValueChanged(object sender, EventArgs e)
@@ -307,6 +311,7 @@ namespace QuanLyKhachSan.Views
         }
         private void txtSearchReservation_TextChanged(object sender, EventArgs e)
         {
+            SqlConnection conn = Connection.GetConnection();
             string keyword = txtSearchReservation.Text.Trim();
             string sqlQuery = @"select c.Name,r.RoomType,v.CheckInDate,v.CheckOutDate,v.PaymentStatus,c.PhoneNumber FROM dbo.Customer as c inner join dbo.Reservation as v on c.CustomerId=v.CustomerId inner join dbo.Room as r on v.RoomId=r.RoomId where c.Name like @Name";
             using (SqlCommand command = new SqlCommand(sqlQuery, conn))
@@ -337,6 +342,20 @@ namespace QuanLyKhachSan.Views
                 dtgListReservation.DataSource = reservations;
                 sorting();
             }
+            Connection.CloseConnection(conn);
         }
+
+        private void txtNumberPhone_TextChanged(object sender, EventArgs e)
+        {
+            validation.validate(txtNumberPhone, TypeRegex.NumberPhone, errNumberPhone);
+            btnDatPhong.Enabled = validation.checkAll() && txtCCCD.Text.Length == 12 ? true : false;
+        }
+
+        private void txtFullName_TextChanged(object sender, EventArgs e)
+        {
+            btnDatPhong.Enabled = validation.checkAll() && txtCCCD.Text.Length == 12 ? true : false;
+            validation.validate(txtFullName, TypeRegex.Name, errName);
+        }
+
     }
 }
